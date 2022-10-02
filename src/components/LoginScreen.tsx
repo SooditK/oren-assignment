@@ -17,6 +17,80 @@ import {
   XIcon,
 } from "@heroicons/react/outline";
 import { ChevronLeftIcon } from "@heroicons/react/solid";
+import Essential1 from "./screens/Essential1";
+import Essential2 from "./screens/Essential2";
+import Essential3 from "./screens/Essential3";
+
+const essential1 = [
+  {
+    first: "Board of Directors",
+    second: "",
+    third: "",
+    fourth: "",
+  },
+  {
+    first: "Key Managerial Personnel",
+    second: "",
+    third: "",
+    fourth: "",
+  },
+  {
+    first: "Employees other than BSD and KMPs",
+    second: "",
+    third: "",
+    fourth: "",
+  },
+  {
+    first: "Workers",
+    second: "",
+    third: "",
+    fourth: "",
+  },
+];
+
+const essential2datamonetary = [
+  {
+    first: "Penalty/Fine",
+    second: "",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+  },
+  {
+    first: "Settlement",
+    second: "",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+  },
+  {
+    first: "Compounding Fee",
+    second: "",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+  },
+];
+
+const essential2datanonmonetary = [
+  {
+    first: "Imprisonment",
+    second: "",
+    third: "",
+    fourth: "",
+    fifth: "",
+  },
+  {
+    first: "Punishment",
+    second: "",
+    third: "",
+    fourth: "",
+    fifth: "",
+  },
+];
 
 const navigation = [
   { name: "Home", href: "#", icon: HomeIcon },
@@ -90,17 +164,16 @@ function classNames(...classes: string[]) {
 
 export default function LoginDashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [data, setData] = useState(essential1);
+  const [essential2monetary, setEssential2monetary] = useState(
+    essential2datamonetary
+  );
+  const [essential2nonmonetary, setEssential2nonmonetary] = useState(
+    essential2datanonmonetary
+  );
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-blue-gray-50">
-        <body class="h-full overflow-hidden">
-        ```
-      */}
       <div>
         <div className="flex max-h-screen">
           <Transition.Root show={mobileMenuOpen} as={Fragment}>
@@ -322,10 +395,6 @@ export default function LoginDashboard() {
                           )}
                           aria-current={item.current ? "page" : undefined}
                         >
-                          <item.icon
-                            className="text-blue-gray-400 -mt-0.5 h-6 w-6 flex-shrink-0"
-                            aria-hidden="true"
-                          />
                           <div className="ml-3 text-sm">
                             <p className="text-blue-gray-900 font-medium">
                               {item.name}
@@ -341,168 +410,29 @@ export default function LoginDashboard() {
 
                   {/* Main content */}
                   <div className="min-h-screen flex-1 overflow-auto">
-                    <div className="mx-auto max-w-3xl py-10 px-4 sm:px-6 lg:py-12 lg:px-8">
+                    <div className="mx-auto max-w-5xl py-10 px-4 sm:px-6 lg:py-12 lg:px-8">
                       <h1 className="text-blue-gray-900 text-3xl font-extrabold">
                         Account
                       </h1>
 
                       <div className="max-h-[100vh]">
                         <form className="divide-y-blue-gray-200 mt-6 space-y-8 divide-y">
-                          <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-6 sm:gap-x-6">
-                            <div className="sm:col-span-6">
-                              <h2 className="text-blue-gray-900 text-xl font-medium">
-                                Profile
-                              </h2>
-                              <p className="text-blue-gray-500 mt-1 text-sm">
-                                This information will be displayed publicly so
-                                be careful what you share.
-                              </p>
-                            </div>
-
-                            <div className="sm:col-span-3">
-                              <label
-                                htmlFor="first-name"
-                                className="text-blue-gray-900 block text-sm font-medium"
-                              >
-                                First name
-                              </label>
-                              <input
-                                type="text"
-                                name="first-name"
-                                id="first-name"
-                                autoComplete="given-name"
-                                className="border-blue-gray-300 text-blue-gray-900 mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                              />
-                            </div>
-
-                            <div className="sm:col-span-3">
-                              <label
-                                htmlFor="last-name"
-                                className="text-blue-gray-900 block text-sm font-medium"
-                              >
-                                Last name
-                              </label>
-                              <input
-                                type="text"
-                                name="last-name"
-                                id="last-name"
-                                autoComplete="family-name"
-                                className="border-blue-gray-300 text-blue-gray-900 mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                              />
-                            </div>
-
-                            <div className="sm:col-span-6">
-                              <label
-                                htmlFor="username"
-                                className="text-blue-gray-900 block text-sm font-medium"
-                              >
-                                Username
-                              </label>
-                              <div className="mt-1 flex rounded-md shadow-sm">
-                                <span className="border-blue-gray-300 bg-blue-gray-50 text-blue-gray-500 inline-flex items-center rounded-l-md border border-r-0 px-3 sm:text-sm">
-                                  workcation.com/
-                                </span>
-                                <input
-                                  type="text"
-                                  name="username"
-                                  id="username"
-                                  autoComplete="username"
-                                  defaultValue="lisamarie"
-                                  className="border-blue-gray-300 text-blue-gray-900 block w-full min-w-0 flex-1 rounded-none rounded-r-md focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="sm:col-span-6">
-                              <label
-                                htmlFor="photo"
-                                className="text-blue-gray-900 block text-sm font-medium"
-                              >
-                                Photo
-                              </label>
-                              <div className="mt-1 flex items-center">
-                                <img
-                                  className="inline-block h-12 w-12 rounded-full"
-                                  src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80"
-                                  alt=""
-                                />
-                                <div className="ml-4 flex">
-                                  <div className="border-blue-gray-300 hover:bg-blue-gray-50 focus-within:ring-offset-blue-gray-50 relative flex cursor-pointer items-center rounded-md border bg-white py-2 px-3 shadow-sm focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2">
-                                    <label
-                                      htmlFor="user-photo"
-                                      className="text-blue-gray-900 pointer-events-none relative text-sm font-medium"
-                                    >
-                                      <span>Change</span>
-                                      <span className="sr-only">
-                                        {" "}
-                                        user photo
-                                      </span>
-                                    </label>
-                                    <input
-                                      id="user-photo"
-                                      name="user-photo"
-                                      type="file"
-                                      className="absolute inset-0 h-full w-full cursor-pointer rounded-md border-gray-300 opacity-0"
-                                    />
-                                  </div>
-                                  <button
-                                    type="button"
-                                    className="text-blue-gray-900 hover:text-blue-gray-700 focus:border-blue-gray-300 focus:ring-offset-blue-gray-50 ml-3 rounded-md border border-transparent bg-transparent py-2 px-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                                  >
-                                    Remove
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="sm:col-span-6">
-                              <label
-                                htmlFor="description"
-                                className="text-blue-gray-900 block text-sm font-medium"
-                              >
-                                Description
-                              </label>
-                              <div className="mt-1">
-                                <textarea
-                                  id="description"
-                                  name="description"
-                                  rows={4}
-                                  className="border-blue-gray-300 block w-full rounded-md border shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                                  defaultValue={""}
-                                />
-                              </div>
-                              <p className="text-blue-gray-500 mt-3 text-sm">
-                                Brief description for your profile. URLs are
-                                hyperlinked.
-                              </p>
-                            </div>
-
-                            <div className="sm:col-span-6">
-                              <label
-                                htmlFor="url"
-                                className="text-blue-gray-900 block text-sm font-medium"
-                              >
-                                URL
-                              </label>
-                              <input
-                                type="text"
-                                name="url"
-                                id="url"
-                                className="border-blue-gray-300 text-blue-gray-900 mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                              />
-                            </div>
-                          </div>
-                          <div className="flex justify-end pt-8">
+                          {/* <Essential1 /> */}
+                          {/* <Essential2 data={data} setData={setData} /> */}
+                          <Essential3
+                            data={essential2datamonetary}
+                            setData={setEssential2monetary}
+                            nonMonetary={essential2datanonmonetary}
+                            setNonMonetary={setEssential2nonmonetary}
+                          />
+                          <div className="mt-0 mb-auto flex justify-end pt-8">
                             <button
                               type="button"
                               className="text-blue-gray-900 hover:bg-blue-gray-50 rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                             >
                               Cancel
                             </button>
-                            <button
-                              type="submit"
-                              className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                            >
+                            <button className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                               Save
                             </button>
                           </div>
