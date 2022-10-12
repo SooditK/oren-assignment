@@ -1,4 +1,4 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
+import NextAuth, { User, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 // Prisma adapter for NextAuth, optional and can be removed
@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
           email: string;
           password: string;
         };
-        let user;
+        let user: User | null = null;
         try {
           const newuser = await prisma.user.findUnique({
             where: {
@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
         } catch (error) {
           throw new Error(JSON.stringify(error + " Something went wrong"));
         }
-        return user;
+        return { user };
       },
     }),
   ],
@@ -49,6 +49,14 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   secret: env.NEXTAUTH_SECRET,
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+  },
 };
 
 export default NextAuth(authOptions);

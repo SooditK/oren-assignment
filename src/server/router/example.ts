@@ -22,10 +22,10 @@ export const exampleRouter = createRouter()
     async resolve({ input, ctx }) {
       const data = await ctx.prisma.user.upsert({
         where: {
-          id: input.id,
+          email: input.id,
         },
         create: {
-          id: input.id,
+          email: input.id,
           data_json: {
             text: input.text,
           },

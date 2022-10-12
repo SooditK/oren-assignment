@@ -292,6 +292,7 @@ function classNames(...classes: string[]) {
 export default function LoginDashboard() {
   const mutation = trpc.useMutation("example.save");
   const { data: session, status } = useSession();
+  console.log(session);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [essential1data, setEssential1data] = useState({
     yesorno: "yes",
@@ -315,7 +316,6 @@ export default function LoginDashboard() {
 
   async function handleSave(e: React.SyntheticEvent) {
     e.preventDefault();
-    toast.success("Saved Successfully");
     const data = {
       essential1data,
       essential2data,
@@ -329,7 +329,7 @@ export default function LoginDashboard() {
     mutation.mutate(
       {
         text: JSON.stringify(data),
-        id: session!.user!.id,
+        id: session!.user!.email!,
       },
       {
         onSuccess({ message, success }) {
