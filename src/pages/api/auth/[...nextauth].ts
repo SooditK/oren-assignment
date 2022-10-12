@@ -28,7 +28,7 @@ export const authOptions: NextAuthOptions = {
           });
           if (newuser) {
             // match password
-            const match = await bcrypt.compare(password, newuser.password);
+            const match = await bcrypt.compare(password, newuser.password!);
             if (match) {
               user = newuser;
             } else {
