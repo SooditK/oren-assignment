@@ -14,8 +14,32 @@ export const exampleRouter = createRouter()
       };
     },
   })
-  .query("getAll", {
-    async resolve({ ctx }) {
-      return await ctx.prisma.example.findMany();
+  .mutation("save", {
+    input: z.object({
+      text: z.string(),
+      id: z.string(),
+    }),
+    async resolve({ input, ctx }) {
+      const data = await ctx.prisma.user.upsert({
+        where: {
+          id: input.id,
+        },
+        create: {
+          id: input.id,
+          data_json: {
+            text: input.text,
+          },
+        },
+        update: {
+          data_json: {
+            text: input.text,
+          },
+        },
+      });
+      return {
+        success: true,
+        message: `Saved data`,
+        data,
+      };
     },
   });

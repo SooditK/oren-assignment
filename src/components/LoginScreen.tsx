@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   BellIcon,
@@ -11,17 +11,20 @@ import {
   KeyIcon,
   MenuIcon,
   PhotographIcon,
-  SearchCircleIcon,
   UserIcon,
-  ViewGridAddIcon,
   XIcon,
 } from "@heroicons/react/outline";
 import { ChevronLeftIcon } from "@heroicons/react/solid";
 import Essential1 from "./screens/Essential1";
 import Essential2 from "./screens/Essential2";
 import Essential3 from "./screens/Essential3";
+import { toast } from "react-hot-toast";
+import { signOut, useSession } from "next-auth/react";
+import Leadership1 from "./screens/Leadership1";
+import Leadership2 from "./screens/Leadership2";
+import { trpc } from "../utils/trpc";
 
-const essential1 = [
+const essential2 = [
   {
     first: "Board of Directors",
     second: "",
@@ -48,7 +51,7 @@ const essential1 = [
   },
 ];
 
-const essential2datamonetary = [
+const essential3datamonetary = [
   {
     first: "Penalty/Fine",
     second: "",
@@ -75,7 +78,7 @@ const essential2datamonetary = [
   },
 ];
 
-const essential2datanonmonetary = [
+const essential3datanonmonetary = [
   {
     first: "Imprisonment",
     second: "",
@@ -92,6 +95,147 @@ const essential2datanonmonetary = [
   },
 ];
 
+const leadership1dataemployee = [
+  {
+    first: "1",
+    second: "Permanent",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+    seventh: "",
+  },
+  {
+    first: "2",
+    second: "Other than Permanent",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+    seventh: "",
+  },
+  {
+    first: "3",
+    second: "Total Employee",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+    seventh: "",
+  },
+  {
+    first: "4",
+    second: "Permanant (F)",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+    seventh: "",
+  },
+  {
+    first: "5",
+    second: "Other than Permanent (G)",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+    seventh: "",
+  },
+  {
+    first: "6",
+    second: "Total Workers (F+G)",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+    seventh: "",
+  },
+];
+
+const leadership1diffrentlyabled = [
+  {
+    first: "1",
+    second: "Permanant",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+    seventh: "",
+  },
+  {
+    first: "2",
+    second: "Other than Permanant",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+    seventh: "",
+  },
+  {
+    first: "3",
+    second: "Total diffrently abled(D+E)",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+    seventh: "",
+  },
+  {
+    first: "4",
+    second: "Permanant (F)",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+    seventh: "",
+  },
+  {
+    first: "5",
+    second: "Other than Permanant (G)",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+    seventh: "",
+  },
+  {
+    first: "6",
+    second: "Total Diffrently Abled Workers (F+G)",
+    third: "",
+    fourth: "",
+    fifth: "",
+    sixth: "",
+    seventh: "",
+  },
+];
+
+const leadership2data = [
+  {
+    first: "1",
+    second: "",
+    third: "",
+    fourth: "",
+  },
+  {
+    first: "2",
+    second: "",
+    third: "",
+    fourth: "",
+  },
+  {
+    first: "3",
+    second: "",
+    third: "",
+    fourth: "",
+  },
+  {
+    first: "4",
+    second: "",
+    third: "",
+    fourth: "",
+  },
+];
+
 const navigation = [
   { name: "Home", href: "#", icon: HomeIcon },
   { name: "Trending", href: "#", icon: FireIcon },
@@ -101,59 +245,42 @@ const navigation = [
 ];
 const subNavigation = [
   {
-    name: "Account",
+    name: "Essential Questions",
     description:
-      "Ullamcorper id at suspendisse nec id volutpat vestibulum enim. Interdum blandit.",
-    href: "#",
+      "Does the entity have an anti-corruption or anti-bribery policy?",
+    index: 1,
     icon: CogIcon,
     current: true,
   },
   {
-    name: "Notifications",
+    name: "Essential Questions",
     description:
-      "Enim, nullam mi vel et libero urna lectus enim. Et sed in maecenas tellus.",
-    href: "#",
+      "Coverage by training and awareness programmes on any of the Principles during the financial year",
+    index: 2,
     icon: BellIcon,
     current: false,
   },
   {
-    name: "Security",
+    name: "Essential Questions",
     description:
-      "Semper accumsan massa vel volutpat massa. Non turpis ut nulla aliquet turpis.",
-    href: "#",
+      "Details of fines / penalties /punishment/ award/ compounding fees/ settlement amount paid in proceedings (by the entity or by directors / KMPs) with regulators/ law enforcement agencies/judicial institutions, in the financial year, in the following format",
+    index: 3,
     icon: KeyIcon,
     current: false,
   },
   {
-    name: "Appearance",
-    description:
-      "Magna nulla id sed ornare ipsum eget. Massa eget porttitor suscipit consequat.",
-    href: "#",
+    name: "Leadership Questions",
+    description: "Details as at the end of Financial Year:",
+    index: 4,
     icon: PhotographIcon,
     current: false,
   },
   {
-    name: "Billing",
+    name: "Leadership Questions",
     description:
-      "Orci aliquam arcu egestas turpis cursus. Lectus faucibus netus dui auctor mauris.",
-    href: "#",
+      "Products/Services sold by the entity (accounting for 90% of the entity’s Turnover):",
+    index: 5,
     icon: CashIcon,
-    current: false,
-  },
-  {
-    name: "Integrations",
-    description:
-      "Nisi, elit volutpat odio urna quis arcu faucibus dui. Mauris adipiscing pellentesque.",
-    href: "#",
-    icon: ViewGridAddIcon,
-    current: false,
-  },
-  {
-    name: "Additional Resources",
-    description:
-      "Quis viverra netus donec ut auctor fringilla facilisis. Nunc sit donec cursus sit quis et.",
-    href: "#",
-    icon: SearchCircleIcon,
     current: false,
   },
 ];
@@ -163,14 +290,63 @@ function classNames(...classes: string[]) {
 }
 
 export default function LoginDashboard() {
+  const mutation = trpc.useMutation("example.save");
+  const { data: session, status } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [data, setData] = useState(essential1);
-  const [essential2monetary, setEssential2monetary] = useState(
-    essential2datamonetary
+  const [essential1data, setEssential1data] = useState({
+    yesorno: "yes",
+    policy: "",
+  });
+  const [essential2data, setEssential2data] = useState(essential2);
+  const [essential3monetary, setEssential3monetary] = useState(
+    essential3datamonetary
   );
-  const [essential2nonmonetary, setEssential2nonmonetary] = useState(
-    essential2datanonmonetary
+  const [essential3nonmonetary, setEssential3nonmonetary] = useState(
+    essential3datanonmonetary
   );
+  const [leadership1employee, setLeadership1employee] = useState(
+    leadership1dataemployee
+  );
+  const [leadership1diffabled, setLeadership1diffabled] = useState(
+    leadership1diffrentlyabled
+  );
+  const [leadership2, setLeadership2] = useState(leadership2data);
+  const [subNavIndex, setSubNavIndex] = useState(1);
+
+  async function handleSave(e: React.SyntheticEvent) {
+    e.preventDefault();
+    toast.success("Saved Successfully");
+    const data = {
+      essential1data,
+      essential2data,
+      essential3monetary,
+      essential3nonmonetary,
+      leadership1employee,
+      leadership1diffabled,
+      leadership2,
+    };
+    toast.loading("Saving...");
+    mutation.mutate(
+      {
+        text: JSON.stringify(data),
+        id: session!.user!.id,
+      },
+      {
+        onSuccess({ message, success }) {
+          toast.dismiss();
+          if (success) {
+            toast.success(message);
+          } else {
+            toast.error(message);
+          }
+        },
+        onError() {
+          toast.dismiss();
+          toast.error("Error saving");
+        },
+      }
+    );
+  }
 
   return (
     <>
@@ -239,8 +415,8 @@ export default function LoginDashboard() {
                         {navigation.map((item) => (
                           <a
                             key={item.name}
-                            href={item.href}
-                            className="text-blue-gray-600 hover:bg-blue-gray-50 hover:text-blue-gray-900 group flex items-center rounded-md p-2 text-base font-medium"
+                            onClick={() => signOut()}
+                            className="text-blue-gray-600 hover:bg-blue-gray-50 hover:text-blue-gray-900 group flex items-center rounded-md p-2 text-base font-medium hover:cursor-pointer"
                           >
                             <item.icon
                               className="text-blue-gray-400 group-hover:text-blue-gray-500 mr-4 h-6 w-6"
@@ -255,7 +431,7 @@ export default function LoginDashboard() {
                   <div className="border-blue-gray-200 flex flex-shrink-0 border-t p-4">
                     <a href="#" className="group block flex-shrink-0">
                       <div className="flex items-center">
-                        <div>
+                        <div onClick={() => signOut()}>
                           <img
                             className="inline-block h-10 w-10 rounded-full"
                             src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80"
@@ -300,8 +476,8 @@ export default function LoginDashboard() {
                     {navigation.map((item) => (
                       <a
                         key={item.name}
-                        href={item.href}
-                        className="flex items-center rounded-lg p-4 text-blue-200 hover:bg-blue-700"
+                        onClick={() => signOut()}
+                        className="flex items-center rounded-lg p-4 text-blue-200 hover:cursor-pointer hover:bg-blue-700"
                       >
                         <item.icon className="h-6 w-6" aria-hidden="true" />
                         <span className="sr-only">{item.name}</span>
@@ -310,7 +486,7 @@ export default function LoginDashboard() {
                   </nav>
                 </div>
                 <div className="flex flex-shrink-0 pb-5">
-                  <a href="#" className="w-full flex-shrink-0">
+                  <a onClick={() => signOut()} className="w-full flex-shrink-0">
                     <img
                       className="mx-auto block h-10 w-10 rounded-full"
                       src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80"
@@ -386,12 +562,12 @@ export default function LoginDashboard() {
                       {subNavigation.map((item) => (
                         <a
                           key={item.name}
-                          href={item.href}
+                          onClick={() => setSubNavIndex(item.index)}
                           className={classNames(
                             item.current
                               ? "bg-blue-50 bg-opacity-50"
                               : "hover:bg-blue-50 hover:bg-opacity-50",
-                            "border-blue-gray-200 flex border-b p-6"
+                            "border-blue-gray-200 flex border-b p-6 hover:cursor-pointer"
                           )}
                           aria-current={item.current ? "page" : undefined}
                         >
@@ -417,14 +593,40 @@ export default function LoginDashboard() {
 
                       <div className="max-h-[100vh]">
                         <form className="divide-y-blue-gray-200 mt-6 space-y-8 divide-y">
-                          {/* <Essential1 /> */}
-                          {/* <Essential2 data={data} setData={setData} /> */}
-                          <Essential3
-                            data={essential2datamonetary}
-                            setData={setEssential2monetary}
-                            nonMonetary={essential2datanonmonetary}
-                            setNonMonetary={setEssential2nonmonetary}
-                          />
+                          {subNavIndex === 1 && (
+                            <Essential1
+                              data={essential1data}
+                              setData={setEssential1data}
+                            />
+                          )}
+                          {subNavIndex === 2 && (
+                            <Essential2
+                              data={essential2data}
+                              setData={setEssential2data}
+                            />
+                          )}
+                          {subNavIndex === 3 && (
+                            <Essential3
+                              data={essential3monetary}
+                              setData={setEssential3monetary}
+                              nonMonetary={essential3nonmonetary}
+                              setNonMonetary={setEssential3nonmonetary}
+                            />
+                          )}
+                          {subNavIndex === 4 && (
+                            <Leadership1
+                              data={leadership1employee}
+                              setData={setLeadership1employee}
+                              nonMonetary={leadership1diffabled}
+                              setNonMonetary={setLeadership1diffabled}
+                            />
+                          )}
+                          {subNavIndex === 5 && (
+                            <Leadership2
+                              data={leadership2}
+                              setData={setLeadership2}
+                            />
+                          )}
                           <div className="mt-0 mb-auto flex justify-end pt-8">
                             <button
                               type="button"
@@ -432,7 +634,10 @@ export default function LoginDashboard() {
                             >
                               Cancel
                             </button>
-                            <button className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            <button
+                              onClick={(e) => handleSave(e)}
+                              className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            >
                               Save
                             </button>
                           </div>

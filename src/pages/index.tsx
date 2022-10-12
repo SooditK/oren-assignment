@@ -1,6 +1,8 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
+import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import LoginDashboard from "../components/LoginScreen";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 const Home: NextPage = () => {
   return (
@@ -13,6 +15,21 @@ const Home: NextPage = () => {
       <LoginDashboard />
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await unstable_getServerSession(req, res, authOptions);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
 };
 
 export default Home;

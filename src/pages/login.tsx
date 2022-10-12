@@ -1,9 +1,61 @@
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import { BiShow, BiHide } from "react-icons/bi";
 import toast from "react-hot-toast";
+import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
+
+function validEmail(email: string) {
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
 
 const Login = () => {
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+
+  async function onSubmit(
+    e: React.SyntheticEvent,
+    data: { email: string; password: string }
+  ) {
+    e.preventDefault();
+    // check if the email and password fields are empty
+    if (!data.email || !data.password) {
+      toast.error("Please fill in all fields");
+    } else {
+      if (!validEmail(data.email)) {
+        toast.error("Please enter a valid email");
+      } else {
+        // check if the password is less than 6 characters
+        if (data.password.length < 6) {
+          toast.error("Password must be at least 6 characters");
+        } else {
+          toast.loading("Logging in...");
+          const result = await signIn("credentials", {
+            redirect: false,
+            email: data.email,
+            password: data.password,
+          });
+          if (result?.error) {
+            toast.dismiss();
+            toast.error(result.error);
+          } else if (result?.ok) {
+            toast.dismiss();
+            toast.success("Logged in successfully");
+            router.push("/");
+          } else {
+            toast.dismiss();
+            toast.error("Something went wrong");
+          }
+        }
+      }
+    }
+  }
+
   return (
     <>
       <div className="flex min-h-screen">
@@ -37,10 +89,13 @@ const Login = () => {
                     <div className="mt-1">
                       <input
                         id="email"
-                        name="email"
                         type="email"
-                        autoComplete="email"
                         required
+                        value={data.email}
+                        onChange={(e) =>
+                          setData({ ...data, email: e.target.value })
+                        }
+                        name="email"
                         className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
@@ -56,10 +111,13 @@ const Login = () => {
                     <div className="relative mt-1 rounded-md shadow-sm">
                       <input
                         id="password"
-                        name="password"
                         type={showPassword ? "text" : "password"}
-                        autoComplete="current-password"
+                        value={data.password}
+                        onChange={(e) =>
+                          setData({ ...data, password: e.target.value })
+                        }
                         required
+                        name="password"
                         className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                       />
 
@@ -110,6 +168,10 @@ const Login = () => {
                   <div>
                     <button
                       type="submit"
+                      onClick={(e) => {
+                        console.log(data);
+                        onSubmit(e, data);
+                      }}
                       className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                       Sign in

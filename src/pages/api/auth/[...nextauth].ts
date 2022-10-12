@@ -1,25 +1,54 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
-
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
 // Prisma adapter for NextAuth, optional and can be removed
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "../../../server/db/client";
 import { env } from "../../../env/server.mjs";
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
-  callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
-      }
-      return session;
-    },
+  session: {
+    strategy: "jwt",
   },
-  // Configure one or more authentication providers
-  adapter: PrismaAdapter(prisma),
   providers: [
-    // ...add more providers here
+    CredentialsProvider({
+      type: "credentials",
+      credentials: {},
+      async authorize(credentials, req) {
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
+        let user;
+        try {
+          const newuser = await prisma.user.findUnique({
+            where: {
+              email,
+            },
+          });
+          if (newuser) {
+            // match password
+            const match = await bcrypt.compare(password, newuser.password);
+            if (match) {
+              user = newuser;
+            } else {
+              throw new Error("Incorrect email or password");
+            }
+          } else {
+            // user not found
+            throw new Error("Incorrect email or password");
+          }
+        } catch (error) {
+          throw new Error(JSON.stringify(error + " Something went wrong"));
+        }
+        return user;
+      },
+    }),
   ],
+  pages: {
+    signIn: "/login",
+  },
+  secret: env.NEXTAUTH_SECRET,
 };
 
 export default NextAuth(authOptions);
